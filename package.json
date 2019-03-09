@@ -5,16 +5,18 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "ios": "react-native run-ios --simulator=\"iPhone 6\""
+    "ios": "react-native run-ios --simulator=\"iPhone 6\"",
+    "android": "react-native run-android"
   },
   "dependencies": {
     "react": "16.6.3",
-    "react-native": "0.58.6"
+    "react-native": "0.58.6",
+    "react-native-navigation": "2.13.1"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "24.3.1",
     "babel-eslint": "*",
+    "babel-jest": "24.3.1",
     "eslint": "^5.15.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.16.0",
