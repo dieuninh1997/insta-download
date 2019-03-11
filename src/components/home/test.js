@@ -1,43 +1,20 @@
 import React from 'react';
 import {
-  View, CameraRoll, PermissionsAndroid, Clipboard, FlatList,
+  View, Text, TouchableOpacity, Image, ScrollView, CameraRoll, PermissionsAndroid, Clipboard,
 } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
-import { InstaDownloading } from '../../ui';
+import { InstaLoading } from '../../ui';
 import { isValidateUrl } from '../../utils/validate';
 import styles from './home.styles';
 
 class HomeScreen extends React.PureComponent {
-  static options(passProps) {
-    return {
-      topBar: {
-        visible: true,
-        animate: true, // Controls whether TopBar visibility changes should be animated
-        hideOnScroll: true,
-        drawBehind: true,
-        title: {
-          text: passProps.text,
-          fontSize: 18,
-          fontWeight: 'bold',
-          color: '#000',
-          fontFamily: 'Helvetica',
-        },
-        rightButtons: {
-          id: 'buttonInsta',
-          icon: require('../../assets/images/icon_insta.png'),
-        },
-      },
-    };
-  }
-
   state={
-    downloads: [],
     imageShowUri: null,
     videoUrl: null,
     isVideo: false,
     imageShowName: 'img_insta',
-    // isDownloading: false,
     multialImageShowUri: [],
+    isDownloading: false,
   }
 
 
@@ -81,37 +58,15 @@ class HomeScreen extends React.PureComponent {
 
   handleGetDownloadLink = async (url) => {
     try {
-      const { downloads } = this.state;
       const res = await fetch(url);
       const data = await res.json();
       const displayUrl = data.graphql.shortcode_media.display_url;
       const shortCode = data.graphql.shortcode_media.shortcode;
-      const havingCaption = data.graphql.shortcode_media.edge_media_to_caption;
-      let caption = '';
-      if (havingCaption.edges.length > 0) {
-        caption = havingCaption.edges[0].node.text;
-      }
-      const isVideo = data.graphql.shortcode_media.is_video;
-      const ownerInfo = data.graphql.shortcode_media.owner;
-      const itemDownload = {
-        caption,
-        displayUrl,
-        isVideo,
-        ownerInfo,
-      };
-      console.log('========================================');
-      console.log('itemDownload', itemDownload);
-      console.log('========================================');
       let edgeSidecarToChildren = [];
       if (data.graphql.shortcode_media.edge_sidecar_to_children) {
         edgeSidecarToChildren = data.graphql.shortcode_media.edge_sidecar_to_children.edges;
       }
-      this.setState({
-        imageShowUri: displayUrl,
-        imageShowName: shortCode,
-        multialImageShowUri: edgeSidecarToChildren,
-        downloads: [...downloads, itemDownload],
-      });
+      this.setState({ imageShowUri: displayUrl, imageShowName: shortCode, multialImageShowUri: edgeSidecarToChildren });
     } catch (error) {
       console.log('error handleGetDownloadLink', error);
     }
@@ -124,7 +79,7 @@ class HomeScreen extends React.PureComponent {
 
 
     try {
-      // this.setState({ isDownloading: true });
+      this.setState({ isDownloading: true });
       if (multialImageShowUri.length > 0) {
         multialImageShowUri.forEach(async (item) => {
           const name = item.node.shortcode;
@@ -147,45 +102,35 @@ class HomeScreen extends React.PureComponent {
 
         await CameraRoll.saveToCameraRoll(res.data, type);
       }
-      // setTimeout(() => {
-      //   this.setState({ isDownloading: false });
-      // }, 2000);
+      setTimeout(() => {
+        this.setState({ isDownloading: false });
+      }, 2000);
     } catch (error) {
-      // this.setState({ isDownloading: false });
+      this.setState({ isDownloading: false });
       console.log('error handlePressDownload', error);
     }
   }
 
-  renderItem=({ item }) => (
-    <InstaDownloading item={item} />
-  )
-
-
   render() {
-    const { downloads } = this.state;
-
+    const { imageShowUri, isDownloading } = this.state;
     return (
-      <View style={styles.container}>
-        <FlatList
-          data={downloads}
-          renderItem={this.renderItem}
-        />
-
-
-        {/* <Image
-          style={{ width: 300, height: 300 }}
-          source={{ uri: imageShowUri }}
-        />
-        <TouchableOpacity
-          onPress={this.handlePressDownload}
-          style={{
-            backgroundColor: 'blue', width: 100, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginTop: 20,
-          }}
-        >
-          <Text style={{ color: '#ffffff', fontSize: 16 }}>Download</Text>
-        </TouchableOpacity>
-        {isDownloading ? <InstaLoading /> : null} */}
-      </View>
+      <ScrollView>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Image
+            style={{ width: 300, height: 300 }}
+            source={{ uri: imageShowUri }}
+          />
+          <TouchableOpacity
+            onPress={this.handlePressDownload}
+            style={{
+              backgroundColor: 'blue', width: 100, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginTop: 20,
+            }}
+          >
+            <Text style={{ color: '#ffffff', fontSize: 16 }}>Download</Text>
+          </TouchableOpacity>
+          {isDownloading ? <InstaLoading /> : null}
+        </View>
+      </ScrollView>
     );
   }
 }

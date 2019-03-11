@@ -1,8 +1,10 @@
 import HomeScreen from './home';
-import TodoScreen from './todo';
+import SettingsScreen from './settings';
+import DownloadedScreen from './downloaded';
 
 const screens = {
   HomeScreen,
-  TodoScreen,
+  SettingsScreen,
+  DownloadedScreen,
 };
 export default screens;
