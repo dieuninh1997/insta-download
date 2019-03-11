@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Image, Text } from 'react-native';
-import styles from './downloading.styles';
+import {
+  View, Image, Text, StyleSheet,
+} from 'react-native';
 
 export default class InstaDownloading extends React.PureComponent {
   render() {
@@ -24,3 +25,50 @@ export default class InstaDownloading extends React.PureComponent {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    marginVertical: 8,
+    width: '100%',
+    borderRadius: 10,
+    elevation: 4,
+    paddingHorizontal: 4,
+  },
+  thumbnaiContainer: {
+    width: 120,
+    height: 120,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playIcon: {
+    width: 120,
+    height: 120,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  thumbnai: {
+    width: '100%',
+    height: '100%',
+  },
+  content: {
+    paddingLeft: 10,
+  },
+  ownerInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+  },
+  avatar: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderColor: '#999999',
+    borderWidth: 1,
+  },
+  username: {
+    marginLeft: 10,
+  },
+});

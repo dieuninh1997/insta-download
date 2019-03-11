@@ -1,18 +1,17 @@
 import React from 'react';
 import {
-  View, Text, CameraRoll, Platform, FlatList, Image, Linking,
+  View, Text, CameraRoll, Platform, FlatList, Image, Linking, StyleSheet, Dimensions,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import styles from './downloaded.styles';
 
-class DownloadedScreen extends React.PureComponent {
+class AlbumScreen extends React.PureComponent {
   static options(passProps) {
     return {
       topBar: {
         visible: true,
         animate: true, // Controls whether TopBar visibility changes should be animated
         hideOnScroll: true,
-        drawBehind: true,
+        drawBehind: false,
         title: {
           text: passProps.text,
           fontSize: 18,
@@ -73,9 +72,6 @@ class DownloadedScreen extends React.PureComponent {
       params.after = lastCursor;
     }
     const res = await CameraRoll.getPhotos(params);
-    console.log('========================================');
-    console.log('ress', res);
-    console.log('========================================');
     this.appendAssets(res);
   }
 
@@ -112,7 +108,7 @@ class DownloadedScreen extends React.PureComponent {
     }
     return (
       <View style={styles.photoContainer}>
-        <Image resizeMode="contain" source={{ uri: item.node.image.uri }} style={styles.photo} />
+        <Image resizeMode="contain" source={{ uri: item.node.image.uri }} style={{ width: 50, height: 50 }} />
       </View>
     );
   }
@@ -120,9 +116,6 @@ class DownloadedScreen extends React.PureComponent {
 
   render() {
     const { assets } = this.state;
-    console.log('========================================');
-    console.log('assets', assets);
-    console.log('========================================');
     return (
       <View style={styles.container}>
         {assets.length ? (
@@ -141,4 +134,30 @@ class DownloadedScreen extends React.PureComponent {
     );
   }
 }
-export default DownloadedScreen;
+export default AlbumScreen;
+
+const { width, height } = Dimensions.get('window');
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  listAssets: {
+    margin: 10,
+  },
+  photoContainer: {
+    width: width / 3.2,
+    height: width / 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    margin: 1,
+  },
+  photo: {
+    flex: 1,
+  },
+  emptyText: {
+    color: '#999999',
+    fontSize: 14,
+  },
+});

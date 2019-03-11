@@ -4,19 +4,6 @@ import registerScreens from './src/configs/screen.config';
 registerScreens();
 
 Navigation.events().registerAppLaunchedListener(() => {
-//   Navigation.setRoot({
-//     root: {
-//       stack: {
-//         children: [{
-//           component: {
-//             name: 'insta.HomeScreen',
-//           },
-//         }],
-//       },
-//     },
-//   });
-
-
   Navigation.setRoot({
     root: {
       bottomTabs: {
@@ -34,14 +21,14 @@ Navigation.events().registerAppLaunchedListener(() => {
                     id: 'home',
                     name: 'insta.HomeScreen',
                     passProps: {
-                      text: 'Downloading',
+                      text: 'Home',
                     },
                   },
                 },
               ],
               options: {
                 bottomTab: {
-                  text: 'home',
+                  text: 'Home',
                   icon: require('./src/assets/images/icon_new.png'),
                   selectedTextColor: '#000',
                   textColor: '#999',
@@ -56,16 +43,16 @@ Navigation.events().registerAppLaunchedListener(() => {
                 {
                   component: {
                     id: 'album',
-                    name: 'insta.DownloadedScreen',
+                    name: 'insta.AlbumScreen',
                     passProps: {
-                      text: 'Recent Downloaded',
+                      text: 'Album',
                     },
                   },
                 },
               ],
               options: {
                 bottomTab: {
-                  text: 'album',
+                  text: 'Album',
                   icon: require('./src/assets/images/icon_picture.png'),
                   selectedTextColor: '#000',
                   textColor: '#999',
@@ -89,7 +76,7 @@ Navigation.events().registerAppLaunchedListener(() => {
               ],
               options: {
                 bottomTab: {
-                  text: 'settings',
+                  text: 'Settings',
                   icon: require('./src/assets/images/icon_settings.png'),
                   selectedTextColor: '#000',
                   textColor: '#999',

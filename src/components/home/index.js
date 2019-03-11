@@ -1,11 +1,10 @@
 import React from 'react';
 import {
-  View, CameraRoll, PermissionsAndroid, Clipboard, FlatList,
+  View, CameraRoll, PermissionsAndroid, Clipboard, FlatList, StyleSheet,
 } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
-import { InstaDownloading } from '../../ui';
+import InstaDownloading from '../downloading';
 import { isValidateUrl } from '../../utils/validate';
-import styles from './home.styles';
 
 class HomeScreen extends React.PureComponent {
   static options(passProps) {
@@ -14,7 +13,7 @@ class HomeScreen extends React.PureComponent {
         visible: true,
         animate: true, // Controls whether TopBar visibility changes should be animated
         hideOnScroll: true,
-        drawBehind: true,
+        drawBehind: false,
         title: {
           text: passProps.text,
           fontSize: 18,
@@ -69,7 +68,8 @@ class HomeScreen extends React.PureComponent {
 
 
   getNewUrlFromClipboard = async () => {
-    const urlClipboard = await Clipboard.getString();
+    // const urlClipboard = await Clipboard.getString();
+    const urlClipboard = 'https://www.instagram.com/p/Bu2wmmFnaAS/?utm_source=ig_share_sheet&igshid=wcck81sk0gzg';
     if (isValidateUrl(urlClipboard)) {
       const url = urlClipboard.split('?utm_source=')[0];
       const newUrl = `${url}?__a=1`;
@@ -99,14 +99,11 @@ class HomeScreen extends React.PureComponent {
         isVideo,
         ownerInfo,
       };
-      console.log('========================================');
-      console.log('itemDownload', itemDownload);
-      console.log('========================================');
       let edgeSidecarToChildren = [];
       if (data.graphql.shortcode_media.edge_sidecar_to_children) {
         edgeSidecarToChildren = data.graphql.shortcode_media.edge_sidecar_to_children.edges;
       }
-      this.setState({
+      await this.setState({
         imageShowUri: displayUrl,
         imageShowName: shortCode,
         multialImageShowUri: edgeSidecarToChildren,
@@ -190,3 +187,11 @@ class HomeScreen extends React.PureComponent {
   }
 }
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

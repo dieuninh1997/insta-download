@@ -11,7 +11,7 @@ class SettingsScreen extends React.PureComponent {
         visible: true,
         animate: true, // Controls whether TopBar visibility changes should be animated
         hideOnScroll: true,
-        drawBehind: true,
+        drawBehind: false,
         title: {
           text: passProps.text,
           fontSize: 18,

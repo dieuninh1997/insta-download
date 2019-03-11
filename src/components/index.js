@@ -1,10 +1,10 @@
 import HomeScreen from './home';
 import SettingsScreen from './settings';
-import DownloadedScreen from './downloaded';
+import AlbumScreen from './album';
 
 const screens = {
   HomeScreen,
   SettingsScreen,
-  DownloadedScreen,
+  AlbumScreen,
 };
 export default screens;
