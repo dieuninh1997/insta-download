@@ -3,6 +3,7 @@ import {
   View, CameraRoll, PermissionsAndroid, Clipboard, FlatList, StyleSheet,
 } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
+import Swipeout from 'react-native-swipeout';
 import InstaDownloading from '../downloading';
 import { isValidateUrl } from '../../utils/validate';
 
@@ -69,7 +70,7 @@ class HomeScreen extends React.PureComponent {
 
   getNewUrlFromClipboard = async () => {
     // const urlClipboard = await Clipboard.getString();
-    const urlClipboard = 'https://www.instagram.com/p/Bu2wmmFnaAS/?utm_source=ig_share_sheet&igshid=wcck81sk0gzg';
+    const urlClipboard = 'https://www.instagram.com/p/Bu3wK7ng7_w/?utm_source=ig_web_button_share_sheet';
     if (isValidateUrl(urlClipboard)) {
       const url = urlClipboard.split('?utm_source=')[0];
       const newUrl = `${url}?__a=1`;
@@ -153,9 +154,22 @@ class HomeScreen extends React.PureComponent {
     }
   }
 
-  renderItem=({ item }) => (
-    <InstaDownloading item={item} />
-  )
+
+  renderItem=({ item }) => {
+    const swipeoutBtns = [
+      {
+        text: 'Button',
+        onPress: () => {
+          console.log('hahahaha');
+        },
+      },
+    ];
+    return (
+      <Swipeout right={swipeoutBtns} backgroundColor="#fff" buttonWidth={30}>
+        <InstaDownloading item={item} />
+      </Swipeout>
+    );
+  }
 
 
   render() {
@@ -166,6 +180,7 @@ class HomeScreen extends React.PureComponent {
         <FlatList
           data={downloads}
           renderItem={this.renderItem}
+          keyExtractor={(item, index) => `${index}`}
         />
 
 
@@ -191,7 +206,5 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
