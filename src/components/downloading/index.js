@@ -19,7 +19,10 @@ export default class InstaDownloading extends React.PureComponent {
             <Image source={{ uri: item.ownerInfo.profile_pic_url }} style={styles.avatar} />
             <Text style={styles.username}>{item.ownerInfo.username}</Text>
           </View>
-          <Text style={styles.caption} numberOfLines={2}>{item.caption}</Text>
+          <View style={styles.captionContainer}>
+            <Text style={styles.caption} numberOfLines={2}>{item.caption}</Text>
+
+          </View>
         </View>
       </View>
     );
@@ -72,8 +75,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#000',
   },
+  captionContainer: {
+    flexDirection: 'row',
+  },
   caption: {
     marginTop: 4,
     fontSize: 14,
+    flexWrap: 'wrap',
+    flex: 1,
   },
 });

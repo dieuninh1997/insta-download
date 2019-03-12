@@ -1,8 +1,7 @@
 import React from 'react';
 import {
-  View, Text,
+  View, Text, StyleSheet,
 } from 'react-native';
-import styles from './settings.styles';
 
 class SettingsScreen extends React.PureComponent {
   static options(passProps) {
@@ -36,3 +35,11 @@ class SettingsScreen extends React.PureComponent {
   }
 }
 export default SettingsScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
