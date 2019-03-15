@@ -4,32 +4,11 @@ import {
 } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import Swipeout from 'react-native-swipeout';
-import InstaDownloading from '../downloading';
+import InstaDownloading from '../ista_downloading';
 import { isValidateUrl } from '../../utils/validate';
+import BaseScreen from '../basescreen';
 
-class HomeScreen extends React.PureComponent {
-  static options(passProps) {
-    return {
-      topBar: {
-        visible: true,
-        animate: true, // Controls whether TopBar visibility changes should be animated
-        hideOnScroll: true,
-        drawBehind: false,
-        title: {
-          text: passProps.text,
-          fontSize: 18,
-          fontWeight: 'bold',
-          color: '#000',
-          fontFamily: 'Helvetica',
-        },
-        rightButtons: {
-          id: 'buttonInsta',
-          icon: require('../../assets/images/icon_insta.png'),
-        },
-      },
-    };
-  }
-
+class HomeScreen extends BaseScreen {
   state={
     downloads: [],
     imageShowUri: null,
@@ -44,6 +23,15 @@ class HomeScreen extends React.PureComponent {
   componentDidMount = async () => {
     this.loadData();
   }
+
+  navigationButtonPressed({ buttonId }) {
+    // will be called when "buttonOne" is clicked
+    if (buttonId === 'buttonInsta') {
+      // open instagram app
+      Linking.openURL('instagram://explore');
+    }
+  }
+
 
   loadData = () => {
     this.requestExternalStoragePermission();
