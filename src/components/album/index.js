@@ -3,9 +3,38 @@ import {
   View, Text, CameraRoll, Platform, FlatList, Image, StyleSheet, Dimensions,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import BaseScreen from '../basescreen';
 
-class AlbumScreen extends BaseScreen {
+class AlbumScreen extends React.PureComponent {
+  static options(passProps) {
+    return {
+      topBar: {
+        visible: true,
+        animate: true, // Controls whether TopBar visibility changes should be animated
+        hideOnScroll: true,
+        drawBehind: false,
+        title: {
+          text: passProps.text,
+          fontSize: 18,
+          fontWeight: 'bold',
+          color: '#000',
+          fontFamily: 'Helvetica',
+        },
+        rightButtons: {
+          id: 'buttonInsta',
+          icon: require('../../assets/images/icon_insta.png'),
+        },
+      },
+    };
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    // will be called when "buttonOne" is clicked
+    if (buttonId === 'buttonInsta') {
+      // open instagram app
+      Linking.openURL('instagram://explore');
+    }
+  }
+
   state={
     assets: [],
     lastCursor: null,

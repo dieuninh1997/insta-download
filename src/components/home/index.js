@@ -1,27 +1,36 @@
 import React from 'react';
 import {
-  View, CameraRoll, PermissionsAndroid, Clipboard, FlatList, StyleSheet,
+  View, CameraRoll, PermissionsAndroid, Clipboard, FlatList, StyleSheet, Image, Text,
 } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import Swipeout from 'react-native-swipeout';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import InstaDownloading from '../ista_downloading';
 import { isValidateUrl } from '../../utils/validate';
-import BaseScreen from '../basescreen';
+import * as homeAction from '../../redux/home/home.actions';
 
-class HomeScreen extends BaseScreen {
-  state={
-    downloads: [],
-    imageShowUri: null,
-    videoUrl: null,
-    isVideo: false,
-    imageShowName: 'img_insta',
-    // isDownloading: false,
-    multialImageShowUri: [],
-  }
-
-
-  componentDidMount = async () => {
-    this.loadData();
+class HomeScreen extends React.PureComponent {
+  static options(passProps) {
+    return {
+      topBar: {
+        visible: true,
+        animate: true, // Controls whether TopBar visibility changes should be animated
+        hideOnScroll: true,
+        drawBehind: false,
+        title: {
+          text: passProps.text,
+          fontSize: 18,
+          fontWeight: 'bold',
+          color: '#000',
+          fontFamily: 'Helvetica',
+        },
+        rightButtons: {
+          id: 'buttonInsta',
+          icon: require('../../assets/images/icon_insta.png'),
+        },
+      },
+    };
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -31,7 +40,19 @@ class HomeScreen extends BaseScreen {
       Linking.openURL('instagram://explore');
     }
   }
+  // state={
+  //   downloads: {},
+  //   imageShowUri: null,
+  //   videoUrl: null,
+  //   isVideo: false,
+  //   imageShowName: 'img_insta',
+  //   // isDownloading: false,
+  //   multialImageShowUri: [],
+  // }
 
+  componentDidMount = async () => {
+    this.loadData();
+  }
 
   loadData = () => {
     this.requestExternalStoragePermission();
@@ -57,8 +78,8 @@ class HomeScreen extends BaseScreen {
 
 
   getNewUrlFromClipboard = async () => {
-    // const urlClipboard = await Clipboard.getString();
-    const urlClipboard = 'https://www.instagram.com/p/Bu3wK7ng7_w/?utm_source=ig_web_button_share_sheet';
+    const urlClipboard = await Clipboard.getString();
+    // const urlClipboard = 'https://www.instagram.com/p/Bu3wK7ng7_w/?utm_source=ig_web_button_share_sheet';
     if (isValidateUrl(urlClipboard)) {
       const url = urlClipboard.split('?utm_source=')[0];
       const newUrl = `${url}?__a=1`;
@@ -70,44 +91,51 @@ class HomeScreen extends BaseScreen {
 
   handleGetDownloadLink = async (url) => {
     try {
-      const { downloads } = this.state;
+      const { homeActionProps } = this.props;
       const res = await fetch(url);
       const data = await res.json();
-      const displayUrl = data.graphql.shortcode_media.display_url;
-      const shortCode = data.graphql.shortcode_media.shortcode;
-      const havingCaption = data.graphql.shortcode_media.edge_media_to_caption;
-      let caption = '';
-      if (havingCaption.edges.length > 0) {
-        caption = havingCaption.edges[0].node.text;
-      }
-      const isVideo = data.graphql.shortcode_media.is_video;
-      const ownerInfo = data.graphql.shortcode_media.owner;
-      const itemDownload = {
-        caption,
-        displayUrl,
-        isVideo,
-        ownerInfo,
-      };
-      let edgeSidecarToChildren = [];
-      if (data.graphql.shortcode_media.edge_sidecar_to_children) {
-        edgeSidecarToChildren = data.graphql.shortcode_media.edge_sidecar_to_children.edges;
-      }
-      await this.setState({
-        imageShowUri: displayUrl,
-        imageShowName: shortCode,
-        multialImageShowUri: edgeSidecarToChildren,
-        downloads: [...downloads, itemDownload],
-      });
+      homeActionProps.addUrl(data);
+
+      // const displayUrl = data.graphql.shortcode_media.display_url;
+      // const shortCode = data.graphql.shortcode_media.shortcode;
+      // const havingCaption = data.graphql.shortcode_media.edge_media_to_caption;
+      // let caption = '';
+      // if (havingCaption.edges.length > 0) {
+      //   caption = havingCaption.edges[0].node.text;
+      // }
+      // const isVideo = data.graphql.shortcode_media.is_video;
+      // const ownerInfo = data.graphql.shortcode_media.owner;
+      // const itemDownload = {
+      //   caption,
+      //   displayUrl,
+      //   isVideo,
+      //   ownerInfo,
+      // };
+      // let edgeSidecarToChildren = [];
+      // if (data.graphql.shortcode_media.edge_sidecar_to_children) {
+      //   edgeSidecarToChildren = data.graphql.shortcode_media.edge_sidecar_to_children.edges;
+      // }
+      // await this.setState({
+      //   imageShowUri: displayUrl,
+      //   imageShowName: shortCode,
+      //   multialImageShowUri: edgeSidecarToChildren,
+      //   downloads: [...downloads, itemDownload],
+      // });
     } catch (error) {
       console.log('error handleGetDownloadLink', error);
     }
   }
 
-  handlePressDownload = async () => {
-    const {
-      imageShowUri, imageShowName, multialImageShowUri, isVideo, videoUrl,
-    } = this.state;
-
+  handlePressDownload = async ({ data }) => {
+    const imageShowUri = data.graphql.shortcode_media.display_url;
+    const imageShowName = data.graphql.shortcode_media.shortcode;
+    let edgeSidecarToChildren = [];
+    if (data.graphql.shortcode_media.edge_sidecar_to_children) {
+      edgeSidecarToChildren = data.graphql.shortcode_media.edge_sidecar_to_children.edges;
+    }
+    const multialImageShowUri = edgeSidecarToChildren;
+    const isVideo = data.graphql.shortcode_media.is_video;
+    const videoUrl = isVideo ? data.graphql.shortcode_media.video_url : null;
 
     try {
       // this.setState({ isDownloading: true });
@@ -142,18 +170,32 @@ class HomeScreen extends BaseScreen {
     }
   }
 
+  handleDelete = () => {
+    console.log('========================================');
+    console.log('delete');
+    console.log('========================================');
+  }
+
+  handleDownload = (item) => {
+    const { homeActionProps } = this.props;
+    homeActionProps.downloadUrl(item);
+  }
 
   renderItem=({ item }) => {
-    const swipeoutBtns = [
+    const swipeoutBtnRight = [
       {
-        text: 'Button',
-        onPress: () => {
-          console.log('hahahaha');
-        },
+        text: 'Delete',
+        component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_trash.png')} style={styles.iconDelete} /></View>,
+        onPress: this.handleDelete,
       },
     ];
+    const swipeoutBtnLeft = [{
+      text: 'Download',
+      component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_downloading.png')} style={styles.iconDownload} /></View>,
+      onPress: () => this.handlePressDownload(item),
+    }];
     return (
-      <Swipeout right={swipeoutBtns} backgroundColor="#fff" buttonWidth={30}>
+      <Swipeout right={swipeoutBtnRight} left={swipeoutBtnLeft} backgroundColor="#ffffff" buttonWidth={40}>
         <InstaDownloading item={item} />
       </Swipeout>
     );
@@ -162,14 +204,17 @@ class HomeScreen extends BaseScreen {
 
   render() {
     const { downloads } = this.state;
-
     return (
       <View style={styles.container}>
-        <FlatList
-          data={downloads}
-          renderItem={this.renderItem}
-          keyExtractor={(item, index) => `${index}`}
-        />
+        { downloads ? (
+          <FlatList
+            data={downloads}
+            renderItem={this.renderItem}
+            keyExtractor={(item, index) => `${index}`}
+          />
+        ) : (
+          <Text>Empty </Text>
+        )}
 
 
         {/* <Image
@@ -189,10 +234,34 @@ class HomeScreen extends BaseScreen {
     );
   }
 }
-export default HomeScreen;
+const mapStateToProps = (state) => {
+  console.log('========================================');
+  console.log('state', state);
+  console.log('state.downloads', state.downloads);
+  console.log('========================================');
+  return { downloads: state.downloads.downloads };
+};
+const mapDispatchToProps = dispatch => ({
+  homeActionProps: bindActionCreators(homeAction, dispatch),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  iconContainer: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconDelete: {
+    width: 24,
+    height: 24,
+  },
+  iconDownload: {
+    width: 24,
+    height: 24,
   },
 });

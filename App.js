@@ -1,5 +1,13 @@
 import { Navigation } from 'react-native-navigation';
+import { YellowBox } from 'react-native';
 import registerScreens from './src/configs/screen.config';
+
+YellowBox.ignoreWarnings([
+  'Warning: isMounted',
+  'Module RCTImageLoader',
+  'Class RCTC',
+  'Remote debugger',
+]);
 
 registerScreens();
 

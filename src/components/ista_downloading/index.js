@@ -6,6 +6,8 @@ import {
 export default class InstaDownloading extends React.PureComponent {
   render() {
     const { item } = this.props;
+    const caption = item.edge_media_to_caption.edges.length ? item.edge_media_to_caption.edges[0].node.text : '';
+
     return (
       <View style={styles.container}>
         <View style={styles.thumbnaiContainer}>
@@ -16,11 +18,11 @@ export default class InstaDownloading extends React.PureComponent {
         </View>
         <View style={styles.content}>
           <View style={styles.ownerInfoContainer}>
-            <Image source={{ uri: item.ownerInfo.profile_pic_url }} style={styles.avatar} />
-            <Text style={styles.username}>{item.ownerInfo.username}</Text>
+            <Image source={{ uri: item.owner.profile_pic_url }} style={styles.avatar} />
+            <Text style={styles.username}>{item.owner.username}</Text>
           </View>
           <View style={styles.captionContainer}>
-            <Text style={styles.caption} numberOfLines={2}>{item.caption}</Text>
+            <Text style={styles.caption} numberOfLines={2}>{caption}</Text>
 
           </View>
         </View>
