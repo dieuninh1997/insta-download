@@ -1,8 +1,10 @@
 import React from 'react';
 import {
-  View, Text, CameraRoll, Platform, FlatList, Image, StyleSheet, Dimensions,
+  View, Text, CameraRoll, Platform, Image, StyleSheet, Linking, TouchableOpacity,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
+import PhotoGrid from 'react-native-photo-grid';
+import ImageBrowser from 'react-native-interactive-image-gallery';
 
 class AlbumScreen extends React.PureComponent {
   static options(passProps) {
@@ -10,7 +12,7 @@ class AlbumScreen extends React.PureComponent {
       topBar: {
         visible: true,
         animate: true, // Controls whether TopBar visibility changes should be animated
-        hideOnScroll: true,
+        hideOnScroll: false,
         drawBehind: false,
         title: {
           text: passProps.text,
@@ -31,7 +33,8 @@ class AlbumScreen extends React.PureComponent {
     // will be called when "buttonOne" is clicked
     if (buttonId === 'buttonInsta') {
       // open instagram app
-      Linking.openURL('instagram://explore');
+      Linking.openURL('instagram://explore')
+        .catch(err => console.error('An error occurred', err));
     }
   }
 
@@ -98,32 +101,36 @@ class AlbumScreen extends React.PureComponent {
     }
   }
 
-  renderItem = ({ item }) => {
-    if (!item) {
-      return (
-        <View style={styles.photoContainer}>
-          <Image resizeMode="contain" source={require('../../assets/images/icon_bubble.png')} style={styles.photo} />
-        </View>
-      );
-    }
+
+  renderItem(item, itemSize) {
     return (
-      <View style={styles.photoContainer}>
-        <Image resizeMode="contain" source={{ uri: item.node.image.uri }} style={{ width: 50, height: 50 }} />
-      </View>
+      <TouchableOpacity
+        key={item.id}
+        style={{
+          width: itemSize, height: itemSize, borderWidth: 1, borderColor: '#000',
+        }}
+        onPress={() => {
+          // Do Something
+        }}
+      >
+        <Image
+          resizeMode="cover"
+          style={{ flex: 1 }}
+          source={{ uri: item.src }}
+        />
+      </TouchableOpacity>
     );
   }
-
 
   render() {
     const { assets } = this.state;
     return (
       <View style={styles.container}>
         {assets.length ? (
-          <FlatList
-            style={styles.listAssets}
+          <PhotoGrid
             data={assets}
-            numColumns={3}
-            keyExtractor={(item, index) => `${item}-${index}`}
+            itemsPerRow={3}
+            itemMargin={1}
             renderItem={this.renderItem}
           />
         ) : (
@@ -136,22 +143,12 @@ class AlbumScreen extends React.PureComponent {
 }
 export default AlbumScreen;
 
-const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   listAssets: {
     margin: 10,
-  },
-  photoContainer: {
-    width: width / 3.2,
-    height: width / 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    margin: 1,
   },
   photo: {
     flex: 1,

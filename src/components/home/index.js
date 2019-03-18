@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, CameraRoll, PermissionsAndroid, Clipboard, FlatList, StyleSheet, Image, Text,
+  View, CameraRoll, PermissionsAndroid, Clipboard, FlatList, StyleSheet, Image, Text, Linking, Alert,
 } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import Swipeout from 'react-native-swipeout';
@@ -16,7 +16,7 @@ class HomeScreen extends React.PureComponent {
       topBar: {
         visible: true,
         animate: true, // Controls whether TopBar visibility changes should be animated
-        hideOnScroll: true,
+        hideOnScroll: false,
         drawBehind: false,
         title: {
           text: passProps.text,
@@ -37,7 +37,11 @@ class HomeScreen extends React.PureComponent {
     // will be called when "buttonOne" is clicked
     if (buttonId === 'buttonInsta') {
       // open instagram app
-      Linking.openURL('instagram://explore');
+      console.log('========================================');
+      console.log('buttonInsta home');
+      console.log('========================================');
+      Linking.openURL('instagram://explore')
+        .catch(err => console.error('An error occurred', err));
     }
   }
   // state={
@@ -78,8 +82,8 @@ class HomeScreen extends React.PureComponent {
 
 
   getNewUrlFromClipboard = async () => {
-    const urlClipboard = await Clipboard.getString();
-    // const urlClipboard = 'https://www.instagram.com/p/Bu3wK7ng7_w/?utm_source=ig_web_button_share_sheet';
+    // const urlClipboard = await Clipboard.getString();
+    const urlClipboard = 'https://www.instagram.com/p/Bu3wK7ng7_w/?utm_source=ig_web_button_share_sheet';
     if (isValidateUrl(urlClipboard)) {
       const url = urlClipboard.split('?utm_source=')[0];
       const newUrl = `${url}?__a=1`;
@@ -174,11 +178,25 @@ class HomeScreen extends React.PureComponent {
     console.log('========================================');
     console.log('delete');
     console.log('========================================');
+    Alert.alert(
+      null,
+      'Are you sure delete this post?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false },
+    );
   }
 
-  handleDownload = (item) => {
-    const { homeActionProps } = this.props;
-    homeActionProps.downloadUrl(item);
+  handleDownload = () => {
+    console.log('========================================');
+    console.log('download');
+    console.log('========================================');
   }
 
   renderItem=({ item }) => {
@@ -188,14 +206,14 @@ class HomeScreen extends React.PureComponent {
         component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_trash.png')} style={styles.iconDelete} /></View>,
         onPress: this.handleDelete,
       },
+      {
+        text: 'Download',
+        component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_downloading.png')} style={styles.iconDownload} /></View>,
+        onPress: () => this.handlePressDownload(item),
+      },
     ];
-    const swipeoutBtnLeft = [{
-      text: 'Download',
-      component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_downloading.png')} style={styles.iconDownload} /></View>,
-      onPress: () => this.handlePressDownload(item),
-    }];
     return (
-      <Swipeout right={swipeoutBtnRight} left={swipeoutBtnLeft} backgroundColor="#ffffff" buttonWidth={40}>
+      <Swipeout right={swipeoutBtnRight} backgroundColor="#ffffff" buttonWidth={40}>
         <InstaDownloading item={item} />
       </Swipeout>
     );
@@ -203,7 +221,7 @@ class HomeScreen extends React.PureComponent {
 
 
   render() {
-    const { downloads } = this.state;
+    const { downloads } = this.props;
     return (
       <View style={styles.container}>
         { downloads ? (

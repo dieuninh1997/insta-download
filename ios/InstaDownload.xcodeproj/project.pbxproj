@@ -44,6 +44,9 @@
 		531A5C6B5C4140B19ACED1D3 /* libRNSpinkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F8A1E8181154D779B635342 /* libRNSpinkit.a */; };
 		8DA4E793D86C42C6A6CF6AF8 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 603A5023908B444F8D48F36A /* libRNDeviceInfo.a */; };
 		542C943727854063A49BCC5F /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB09B8A4F8CA4374A0D6137B /* libRNDeviceInfo-tvOS.a */; };
+		EE85E048C7E5413CA49AD7AB /* libRNPhotosFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20C9C945CF7145B98457C85A /* libRNPhotosFramework.a */; };
+		DC0CBE130EAD4BA0B6A89C95 /* RNPhotosFrameworkTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = A5E4480AFCA04B77AC0EB0BC /* RNPhotosFrameworkTests.xctest */; };
+		377332311D5D49ADAE09B521 /* libRNIKInteractiveImageLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E2742C46B8F4198A7030B69 /* libRNIKInteractiveImageLibrary.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -373,6 +376,11 @@
 		A80DB101E9A34A368532DF77 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; name = "RNDeviceInfo.xcodeproj"; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		603A5023908B444F8D48F36A /* libRNDeviceInfo.a */ = {isa = PBXFileReference; name = "libRNDeviceInfo.a"; path = "libRNDeviceInfo.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		CB09B8A4F8CA4374A0D6137B /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNDeviceInfo-tvOS.a"; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		F76EA5A4D1E64F8BBA3093FC /* RNPhotosFramework.xcodeproj */ = {isa = PBXFileReference; name = "RNPhotosFramework.xcodeproj"; path = "../node_modules/react-native-photos-framework/ios/RNPhotosFramework.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		20C9C945CF7145B98457C85A /* libRNPhotosFramework.a */ = {isa = PBXFileReference; name = "libRNPhotosFramework.a"; path = "libRNPhotosFramework.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		A5E4480AFCA04B77AC0EB0BC /* RNPhotosFrameworkTests.xctest */ = {isa = PBXFileReference; name = "RNPhotosFrameworkTests.xctest"; path = "RNPhotosFrameworkTests.xctest"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.cfbundle; explicitFileType = undefined; includeInIndex = 0; };
+		4AC56039591B4D3DAC7B82A9 /* RNIKInteractiveImageLibrary.xcodeproj */ = {isa = PBXFileReference; name = "RNIKInteractiveImageLibrary.xcodeproj"; path = "../node_modules/react-native-interactive-image-gallery/ios/RNIKInteractiveImageLibrary.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		9E2742C46B8F4198A7030B69 /* libRNIKInteractiveImageLibrary.a */ = {isa = PBXFileReference; name = "libRNIKInteractiveImageLibrary.a"; path = "libRNIKInteractiveImageLibrary.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -405,6 +413,9 @@
 				827844F8DBF9454F8F122395 /* libRNFetchBlob.a in Frameworks */,
 				531A5C6B5C4140B19ACED1D3 /* libRNSpinkit.a in Frameworks */,
 				8DA4E793D86C42C6A6CF6AF8 /* libRNDeviceInfo.a in Frameworks */,
+				EE85E048C7E5413CA49AD7AB /* libRNPhotosFramework.a in Frameworks */,
+				DC0CBE130EAD4BA0B6A89C95 /* RNPhotosFrameworkTests.xctest in Resources */,
+				377332311D5D49ADAE09B521 /* libRNIKInteractiveImageLibrary.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -608,6 +619,8 @@
 				DEEF74E0DFF341179CED8805 /* RNFetchBlob.xcodeproj */,
 				9C70007F547B41FDA08F6A64 /* RNSpinkit.xcodeproj */,
 				A80DB101E9A34A368532DF77 /* RNDeviceInfo.xcodeproj */,
+				F76EA5A4D1E64F8BBA3093FC /* RNPhotosFramework.xcodeproj */,
+				4AC56039591B4D3DAC7B82A9 /* RNIKInteractiveImageLibrary.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1257,12 +1270,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
+					"$(SRCROOT)/../node_modules/react-native-interactive-image-gallery/ios",
 				);
 			};
 			name = Debug;
@@ -1288,12 +1306,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
+					"$(SRCROOT)/../node_modules/react-native-interactive-image-gallery/ios",
 				);
 			};
 			name = Release;
@@ -1319,6 +1342,8 @@
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
+					"$(SRCROOT)/../node_modules/react-native-interactive-image-gallery/ios",
 				);
 			};
 			name = Debug;
@@ -1343,6 +1368,8 @@
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
+					"$(SRCROOT)/../node_modules/react-native-interactive-image-gallery/ios",
 				);
 			};
 			name = Release;
@@ -1376,12 +1403,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
+					"$(SRCROOT)/../node_modules/react-native-interactive-image-gallery/ios",
 				);
 			};
 			name = Debug;
@@ -1415,12 +1447,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
+					"$(SRCROOT)/../node_modules/react-native-interactive-image-gallery/ios",
 				);
 			};
 			name = Release;
@@ -1453,12 +1490,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
+					"$(SRCROOT)/../node_modules/react-native-interactive-image-gallery/ios",
 				);
 			};
 			name = Debug;
@@ -1491,12 +1533,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
+					"$(SRCROOT)/../node_modules/react-native-interactive-image-gallery/ios",
 				);
 			};
 			name = Release;

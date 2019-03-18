@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, Linking,
 } from 'react-native';
 
 class SettingsScreen extends React.PureComponent {

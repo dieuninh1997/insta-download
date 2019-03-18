@@ -6,7 +6,7 @@ import {
 export default class InstaDownloading extends React.PureComponent {
   render() {
     const { item } = this.props;
-    const caption = item.edge_media_to_caption.edges.length ? item.edge_media_to_caption.edges[0].node.text : '';
+    const caption = item.graphql.shortcode_media.edge_media_to_caption && item.graphql.shortcode_media.edge_media_to_caption.edges.length ? item.graphql.shortcode_media.edge_media_to_caption.edges[0].node.text : '';
 
     return (
       <View style={styles.container}>
@@ -14,12 +14,12 @@ export default class InstaDownloading extends React.PureComponent {
           {item.isVideo ? (
             <Image style={styles.playIcon} source={require('../../assets/images/icon_play_circled.png')} />
           ) : null}
-          <Image source={{ uri: item.displayUrl }} style={styles.imageThumbnai} />
+          <Image source={{ uri: item.graphql.shortcode_media.display_url }} style={styles.imageThumbnai} />
         </View>
         <View style={styles.content}>
           <View style={styles.ownerInfoContainer}>
-            <Image source={{ uri: item.owner.profile_pic_url }} style={styles.avatar} />
-            <Text style={styles.username}>{item.owner.username}</Text>
+            <Image source={{ uri: item.graphql.shortcode_media.owner.profile_pic_url }} style={styles.avatar} />
+            <Text style={styles.username}>{item.graphql.shortcode_media.owner.username}</Text>
           </View>
           <View style={styles.captionContainer}>
             <Text style={styles.caption} numberOfLines={2}>{caption}</Text>
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    marginVertical: 8,
+    marginVertical: 4,
     borderRadius: 2,
     elevation: 4,
   },

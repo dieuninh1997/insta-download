@@ -5214,6 +5214,11 @@ react-native-device-info@1.0.0:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-1.0.0.tgz#f1b2da9ed77439abf07d9eee5f476645639c3d23"
   integrity sha512-9ch8BAnQxodfIGfzs8rDLYMYeO8PuN01Mro1MTIbUt8kcPez6HdqeE10sTZIzHTDMLtqeAD8LBvxWzu0Kt7PqA==
 
+react-native-interactive-image-gallery@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-interactive-image-gallery/-/react-native-interactive-image-gallery-0.1.2.tgz#35a35ddddabb9713e7180f3bd932f55287b25c81"
+  integrity sha512-gjQfPePnH/qJ3I5DkoPaEqWSVX15ojK/MG0TCBa58PyGmmcbZcj7aPqo+S3YkWz0vxFR/4yWxzR48TRwYQzj9g==
+
 react-native-modal@9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/react-native-modal/-/react-native-modal-9.0.0.tgz#0bfd0770361a2e5c6e0072bfdb0f1277f9662dba"
@@ -5232,6 +5237,16 @@ react-native-navigation@2.13.1:
     prop-types "15.x.x"
     react-lifecycles-compat "2.0.0"
     tslib "1.9.3"
+
+react-native-photo-grid@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-photo-grid/-/react-native-photo-grid-0.0.2.tgz#ceb523c72a52aa792906809f1473d1a1a91a1438"
+  integrity sha1-zrUjxypSqnkpBoCfFHPRoakaFDg=
+
+react-native-photos-framework@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-native-photos-framework/-/react-native-photos-framework-1.0.8.tgz#42a83d2b9f195ea6cb48d3bd8dbbb8c090c3061a"
+  integrity sha1-Qqg9K58ZXqbLSNO9jbu4wJDDBho=
 
 react-native-spinkit@1.1.1:
   version "1.1.1"
