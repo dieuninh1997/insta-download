@@ -3,6 +3,7 @@ package com.instadownload;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.brentvatne.react.ReactVideoPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -40,7 +41,9 @@ public class MainApplication extends NavigationApplication {
      return Arrays.<ReactPackage>asList(
         new RNFetchBlobPackage(),
         new RNSpinkitPackage(),
-        new RNDeviceInfo()
+        new RNDeviceInfo(),
+        new MainReactPackage(),
+        new ReactVideoPackage()
          // eg. new VectorIconsPackage()
      );
  }

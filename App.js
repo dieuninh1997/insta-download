@@ -37,8 +37,10 @@ Navigation.events().registerAppLaunchedListener(() => {
               options: {
                 bottomTab: {
                   text: 'Home',
-                  icon: require('./src/assets/images/icon_new.png'),
+                  icon: require('./src/assets/images/icon_home.png'),
                   selectedTextColor: '#000',
+                  selectedIconColor: '#000',
+                  iconColor: '#999',
                   textColor: '#999',
                   fontFamily: 'Helvetica',
                 },
@@ -59,10 +61,13 @@ Navigation.events().registerAppLaunchedListener(() => {
                 },
               ],
               options: {
+
                 bottomTab: {
                   text: 'Album',
                   icon: require('./src/assets/images/icon_picture.png'),
                   selectedTextColor: '#000',
+                  selectedIconColor: '#000',
+                  iconColor: '#999',
                   textColor: '#999',
                   fontFamily: 'Helvetica',
                 },
@@ -87,6 +92,8 @@ Navigation.events().registerAppLaunchedListener(() => {
                   text: 'Settings',
                   icon: require('./src/assets/images/icon_settings.png'),
                   selectedTextColor: '#000',
+                  selectedIconColor: '#000',
+                  iconColor: '#999',
                   textColor: '#999',
                   fontFamily: 'Helvetica',
                 },

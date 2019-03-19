@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  View, Text, CameraRoll, Platform, Image, StyleSheet, Linking, TouchableOpacity,
+  View, Text, CameraRoll, Platform, Image, StyleSheet, Linking, TouchableOpacity, Modal, Dimensions,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import PhotoGrid from 'react-native-photo-grid';
-import ImageBrowser from 'react-native-interactive-image-gallery';
+import PubSub from 'pubsub-js';
 
+const { width, height } = Dimensions.get('window');
 class AlbumScreen extends React.PureComponent {
   static options(passProps) {
     return {
@@ -43,6 +44,7 @@ class AlbumScreen extends React.PureComponent {
     lastCursor: null,
     noMoreData: false,
     loadingMore: false,
+
   }
 
   constructor(props) {
@@ -52,6 +54,10 @@ class AlbumScreen extends React.PureComponent {
 
   componentDidMount() {
     this.tryLoadPhotos();
+
+    PubSub.subscribe('download', () => {
+      this.loadData();
+    });
   }
 
   tryLoadPhotos() {
@@ -63,33 +69,48 @@ class AlbumScreen extends React.PureComponent {
 
   async loadData() {
     const { lastCursor } = this.state;
-    const params = {
+    const paramsPhotos = {
       first: 35,
       groupTypes: 'All',
       assetType: 'Photos',
     };
+    const paramsVideos = {
+      first: 35,
+      groupTypes: 'All',
+      assetType: 'Videos',
+    };
     if (Platform.OS === 'android') {
-      delete params.groupTypes;// groupTypes is not supported in android
+      delete paramsPhotos.groupTypes;// groupTypes is not supported in android
+      delete paramsVideos.groupTypes;// groupTypes is not supported in android
     }
     if (lastCursor) {
-      params.after = lastCursor;
+      paramsPhotos.after = lastCursor;
+      paramsVideos.after = lastCursor;
     }
-    const res = await CameraRoll.getPhotos(params);
-    this.appendAssets(res);
+    const resPhotos = await CameraRoll.getPhotos(paramsPhotos);
+    const resVideos = await CameraRoll.getPhotos(paramsVideos);
+
+    console.log('========================================');
+    console.log('resPhotos', resPhotos);
+    console.log('resVideos', resVideos);
+    console.log('========================================');
+    this.appendAssets({ resPhotos, resVideos });
   }
 
   appendAssets(data) {
-    const { assets } = this.state;
-    const newAssets = data.edges;
+    const newAssetsPhotos = data.resPhotos.edges;
+    const newAssetsVideos = data.resVideos.edges;
     const newState = {
-      loadingMore: false,
+      loadingMorePhotos: false,
+      loadingMoreVideos: false,
     };
-    if (!data.page_info.has_next_page) {
+    if (!data.resPhotos.page_info.has_next_page || !data.resVideos.page_info.has_next_page) {
       newState.noMoreData = true;
     }
-    if (newAssets.length > 0) {
-      newState.lastCursor = data.page_info.end_cursor;
-      newState.assets = assets.concat(newAssets);
+    if (newAssetsPhotos.length > 0 || newAssetsVideos.length > 0) {
+      newState.lastCursorPhotos = data.resPhotos.page_info.end_cursor;
+      newState.lastCursorVideos = data.resVideos.page_info.end_cursor;
+      newState.assets = newAssetsPhotos.concat(newAssetsVideos);
     }
     this.setState(newState);
   }
@@ -101,23 +122,48 @@ class AlbumScreen extends React.PureComponent {
     }
   }
 
+  goToDetailPhotoOrVideo = (item) => {
+    const isVide = item.node.type === 'video/mp4';
+    Navigation.push(this.props.componentId, {
+      component: {
+        id: 'detail',
+        name: 'insta.DetailScreen',
+        passProps: {
+          text: isVide ? 'Photo' : 'Video',
+          data: item,
+        },
+      },
+    });
+  }
 
-  renderItem(item, itemSize) {
+  renderItem =(item, itemSize) => {
+    console.log('========================================');
+    console.log('item', item);
+    console.log('========================================');
+    const isVideo = item.node.type === 'video/mp4';
     return (
       <TouchableOpacity
-        key={item.id}
+        key={item.node.image.uri}
         style={{
           width: itemSize, height: itemSize, borderWidth: 1, borderColor: '#000',
         }}
-        onPress={() => {
-          // Do Something
-        }}
+        onPress={() => this.goToDetailPhotoOrVideo(item)}
       >
-        <Image
-          resizeMode="cover"
-          style={{ flex: 1 }}
-          source={{ uri: item.src }}
-        />
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        >
+          <Image
+            resizeMode="cover"
+            style={{ width: itemSize, height: itemSize }}
+            source={{ uri: item.node.image.uri }}
+          />
+          {isVideo ? (
+            <Image style={styles.playIcon} resizeMode="cover" source={require('../../assets/images/icon_play_circled.png')} />
+          ) : null}
+        </View>
       </TouchableOpacity>
     );
   }
@@ -136,7 +182,6 @@ class AlbumScreen extends React.PureComponent {
         ) : (
           <Text style={styles.emptyText}>Empty</Text>
         )}
-
       </View>
     );
   }
@@ -156,5 +201,11 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#999999',
     fontSize: 14,
+  },
+
+  playIcon: {
+    width: 50,
+    height: 50,
+    position: 'absolute',
   },
 });

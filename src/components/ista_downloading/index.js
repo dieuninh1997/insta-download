@@ -7,14 +7,14 @@ export default class InstaDownloading extends React.PureComponent {
   render() {
     const { item } = this.props;
     const caption = item.graphql.shortcode_media.edge_media_to_caption && item.graphql.shortcode_media.edge_media_to_caption.edges.length ? item.graphql.shortcode_media.edge_media_to_caption.edges[0].node.text : '';
-
+    const isVideo = item.graphql.shortcode_media.is_video;
     return (
       <View style={styles.container}>
         <View style={styles.thumbnaiContainer}>
-          {item.isVideo ? (
-            <Image style={styles.playIcon} source={require('../../assets/images/icon_play_circled.png')} />
-          ) : null}
           <Image source={{ uri: item.graphql.shortcode_media.display_url }} style={styles.imageThumbnai} />
+          {isVideo ? (
+            <Image style={styles.playIcon} resizeMode="cover" source={require('../../assets/images/icon_play_circled.png')} />
+          ) : null}
         </View>
         <View style={styles.content}>
           <View style={styles.ownerInfoContainer}>
@@ -46,11 +46,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   playIcon: {
-    width: 120,
-    height: 120,
+    width: 50,
+    height: 50,
     position: 'absolute',
-    top: 0,
-    left: 0,
   },
   imageThumbnai: {
     width: '90%',

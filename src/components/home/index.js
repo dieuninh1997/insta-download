@@ -6,6 +6,8 @@ import RNFetchBlob from 'rn-fetch-blob';
 import Swipeout from 'react-native-swipeout';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PubSub from 'pubsub-js';
+import { Navigation } from 'react-native-navigation';
 import InstaDownloading from '../ista_downloading';
 import { isValidateUrl } from '../../utils/validate';
 import * as homeAction from '../../redux/home/home.actions';
@@ -26,16 +28,21 @@ class HomeScreen extends React.PureComponent {
           fontFamily: 'Helvetica',
         },
         rightButtons: {
-          id: 'buttonInsta',
+          id: 'buttonInstaHome',
           icon: require('../../assets/images/icon_insta.png'),
         },
       },
     };
   }
 
+  constructor(props) {
+    super(props);
+    Navigation.events().bindComponent(this); // <== Will be automatically unregistered when unmounted
+  }
+
   navigationButtonPressed({ buttonId }) {
     // will be called when "buttonOne" is clicked
-    if (buttonId === 'buttonInsta') {
+    if (buttonId === 'buttonInstaHome') {
       // open instagram app
       console.log('========================================');
       console.log('buttonInsta home');
@@ -67,6 +74,7 @@ class HomeScreen extends React.PureComponent {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         {
           title: 'My App Storage Permission',
           message: 'My App needs access to your storage '
@@ -82,8 +90,11 @@ class HomeScreen extends React.PureComponent {
 
 
   getNewUrlFromClipboard = async () => {
-    // const urlClipboard = await Clipboard.getString();
-    const urlClipboard = 'https://www.instagram.com/p/Bu3wK7ng7_w/?utm_source=ig_web_button_share_sheet';
+    const urlClipboard = await Clipboard.getString();
+    console.log('========================================');
+    console.log('urlClipboard', urlClipboard);
+    console.log('========================================');
+    // const urlClipboard = 'https://www.instagram.com/p/Bu3wK7ng7_w/?utm_source=ig_web_button_share_sheet';
     if (isValidateUrl(urlClipboard)) {
       const url = urlClipboard.split('?utm_source=')[0];
       const newUrl = `${url}?__a=1`;
@@ -130,7 +141,10 @@ class HomeScreen extends React.PureComponent {
     }
   }
 
-  handlePressDownload = async ({ data }) => {
+  handlePressDownload = async (data) => {
+    console.log('========================================');
+    console.log('handlePressDownload', data);
+    console.log('========================================');
     const imageShowUri = data.graphql.shortcode_media.display_url;
     const imageShowName = data.graphql.shortcode_media.shortcode;
     let edgeSidecarToChildren = [];
@@ -165,6 +179,9 @@ class HomeScreen extends React.PureComponent {
 
         await CameraRoll.saveToCameraRoll(res.data, type);
       }
+
+      PubSub.publish('download', 'downloaded');
+
       // setTimeout(() => {
       //   this.setState({ isDownloading: false });
       // }, 2000);
@@ -174,10 +191,7 @@ class HomeScreen extends React.PureComponent {
     }
   }
 
-  handleDelete = () => {
-    console.log('========================================');
-    console.log('delete');
-    console.log('========================================');
+  handleDelete = (item) => {
     Alert.alert(
       null,
       'Are you sure delete this post?',
@@ -187,24 +201,25 @@ class HomeScreen extends React.PureComponent {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
+        {
+          text: 'OK',
+          onPress: () => {
+            const { homeActionProps } = this.props;
+            homeActionProps.removeUrl(item);
+          },
+        },
       ],
       { cancelable: false },
     );
   }
 
-  handleDownload = () => {
-    console.log('========================================');
-    console.log('download');
-    console.log('========================================');
-  }
 
   renderItem=({ item }) => {
     const swipeoutBtnRight = [
       {
         text: 'Delete',
         component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_trash.png')} style={styles.iconDelete} /></View>,
-        onPress: this.handleDelete,
+        onPress: () => this.handleDelete(item),
       },
       {
         text: 'Download',
