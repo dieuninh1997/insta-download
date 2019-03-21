@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PubSub from 'pubsub-js';
 import { Navigation } from 'react-native-navigation';
+import { Card, Button, Icon } from 'react-native-elements';
 import InstaDownloading from '../ista_downloading';
 import { isValidateUrl } from '../../utils/validate';
 import * as homeAction from '../../redux/home/home.actions';
@@ -199,6 +200,17 @@ class HomeScreen extends React.PureComponent {
   }
 
 
+  openVideoGuide = () => {
+    const url = 'https://www.youtube.com/watch?v=korvXDQD6dM&list=RDSeQ1OBwwWK4&index=29';
+    Linking.canOpenURL(url).then((supported) => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log(`Don't know how to open URI: ${url}`);
+      }
+    });
+  }
+
   render() {
     const { downloads } = this.props;
     const { refreshing } = this.state;
@@ -211,14 +223,28 @@ class HomeScreen extends React.PureComponent {
       )}
       >
         <View style={styles.container}>
-          { downloads ? (
+          { downloads.length > 0 ? (
             <FlatList
               data={downloads}
               renderItem={this.renderItem}
               keyExtractor={(item, index) => `${index}`}
             />
           ) : (
-            <Text>Empty </Text>
+            <Card>
+              <Text style={styles.guideText}>1. Open this app</Text>
+              <Text style={styles.guideText}>2. Click instagram button above</Text>
+              <Text style={styles.guideText}>3. Click the three dot button on a post</Text>
+              <Text style={styles.guideText}>{'4. Click the button \"Copy Link\"'}</Text>
+              <Text style={styles.guideText}>5. Return this app to start repost</Text>
+
+              <Button
+                icon={<Icon name="youtube" color="#000" type="font-awesome" />}
+                buttonStyle={styles.btnGotIt}
+                title="   Video guide to use app"
+                type="clear"
+                onPress={this.openVideoGuide}
+              />
+            </Card>
           )}
 
 
@@ -255,6 +281,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ccc',
   },
   iconContainer: {
     flex: 1,
@@ -269,5 +303,19 @@ const styles = StyleSheet.create({
   iconDownload: {
     width: 24,
     height: 24,
+  },
+  guideText: {
+    marginBottom: 10,
+    color: '#000',
+  },
+  btnGotIt: {
+    borderRadius: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    marginBottom: 0,
+    borderTopWidth: 1,
+    borderTopColor: '#999999',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
