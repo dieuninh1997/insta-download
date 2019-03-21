@@ -1,12 +1,11 @@
 import React from 'react';
 import {
-  View, Text, CameraRoll, Platform, Image, StyleSheet, Linking, TouchableOpacity, Modal, Dimensions,
+  View, Text, CameraRoll, Platform, Image, StyleSheet, Linking, TouchableOpacity,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import PhotoGrid from 'react-native-photo-grid';
 import PubSub from 'pubsub-js';
 
-const { width, height } = Dimensions.get('window');
 class AlbumScreen extends React.PureComponent {
   static options(passProps) {
     return {
@@ -30,15 +29,6 @@ class AlbumScreen extends React.PureComponent {
     };
   }
 
-  navigationButtonPressed({ buttonId }) {
-    // will be called when "buttonOne" is clicked
-    if (buttonId === 'buttonInsta') {
-      // open instagram app
-      Linking.openURL('instagram://explore')
-        .catch(err => console.error('An error occurred', err));
-    }
-  }
-
   state={
     assets: [],
     lastCursor: null,
@@ -60,6 +50,15 @@ class AlbumScreen extends React.PureComponent {
     });
   }
 
+  navigationButtonPressed({ buttonId }) {
+    // will be called when "buttonOne" is clicked
+    if (buttonId === 'buttonInsta') {
+      // open instagram app
+      Linking.openURL('instagram://explore')
+        .catch(err => console.error('An error occurred', err));
+    }
+  }
+
   tryLoadPhotos() {
     const { loadingMore } = this.state;
     if (!loadingMore) {
@@ -73,11 +72,13 @@ class AlbumScreen extends React.PureComponent {
       first: 35,
       groupTypes: 'All',
       assetType: 'Photos',
+      groupName: 'DCIM',
     };
     const paramsVideos = {
       first: 35,
       groupTypes: 'All',
       assetType: 'Videos',
+      groupName: 'DCIM',
     };
     if (Platform.OS === 'android') {
       delete paramsPhotos.groupTypes;// groupTypes is not supported in android
@@ -90,10 +91,6 @@ class AlbumScreen extends React.PureComponent {
     const resPhotos = await CameraRoll.getPhotos(paramsPhotos);
     const resVideos = await CameraRoll.getPhotos(paramsVideos);
 
-    console.log('========================================');
-    console.log('resPhotos', resPhotos);
-    console.log('resVideos', resVideos);
-    console.log('========================================');
     this.appendAssets({ resPhotos, resVideos });
   }
 
@@ -132,14 +129,18 @@ class AlbumScreen extends React.PureComponent {
           text: isVide ? 'Photo' : 'Video',
           data: item,
         },
+        options: {
+          bottomTabs: {
+            visible: false,
+            drawBehind: true,
+            animate: true,
+          },
+        },
       },
     });
   }
 
   renderItem =(item, itemSize) => {
-    console.log('========================================');
-    console.log('item', item);
-    console.log('========================================');
     const isVideo = item.node.type === 'video/mp4';
     return (
       <TouchableOpacity

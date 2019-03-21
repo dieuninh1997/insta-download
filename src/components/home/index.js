@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, CameraRoll, PermissionsAndroid, Clipboard, FlatList, StyleSheet, Image, Text, Linking, Alert,
+  View, CameraRoll, PermissionsAndroid, Clipboard, FlatList, StyleSheet, Image, Text, Linking, Alert, RefreshControl, ScrollView,
 } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import Swipeout from 'react-native-swipeout';
@@ -41,25 +41,20 @@ class HomeScreen extends React.PureComponent {
   }
 
   navigationButtonPressed({ buttonId }) {
-    // will be called when "buttonOne" is clicked
     if (buttonId === 'buttonInstaHome') {
-      // open instagram app
-      console.log('========================================');
-      console.log('buttonInsta home');
-      console.log('========================================');
       Linking.openURL('instagram://explore')
         .catch(err => console.error('An error occurred', err));
     }
   }
-  // state={
-  //   downloads: {},
-  //   imageShowUri: null,
-  //   videoUrl: null,
-  //   isVideo: false,
-  //   imageShowName: 'img_insta',
-  //   // isDownloading: false,
-  //   multialImageShowUri: [],
-  // }
+
+  state = {
+    refreshing: false,
+  };
+
+  _onRefresh = () => {
+    this.setState({ refreshing: true });
+    this.loadData();
+  }
 
   componentDidMount = async () => {
     this.loadData();
@@ -68,6 +63,7 @@ class HomeScreen extends React.PureComponent {
   loadData = () => {
     this.requestExternalStoragePermission();
     this.getNewUrlFromClipboard();
+    this.setState({ refreshing: false });
   }
 
   requestExternalStoragePermission = async () => {
@@ -91,9 +87,6 @@ class HomeScreen extends React.PureComponent {
 
   getNewUrlFromClipboard = async () => {
     const urlClipboard = await Clipboard.getString();
-    console.log('========================================');
-    console.log('urlClipboard', urlClipboard);
-    console.log('========================================');
     // const urlClipboard = 'https://www.instagram.com/p/Bu3wK7ng7_w/?utm_source=ig_web_button_share_sheet';
     if (isValidateUrl(urlClipboard)) {
       const url = urlClipboard.split('?utm_source=')[0];
@@ -109,54 +102,27 @@ class HomeScreen extends React.PureComponent {
       const { homeActionProps } = this.props;
       const res = await fetch(url);
       const data = await res.json();
-      homeActionProps.addUrl(data);
-
-      // const displayUrl = data.graphql.shortcode_media.display_url;
-      // const shortCode = data.graphql.shortcode_media.shortcode;
-      // const havingCaption = data.graphql.shortcode_media.edge_media_to_caption;
-      // let caption = '';
-      // if (havingCaption.edges.length > 0) {
-      //   caption = havingCaption.edges[0].node.text;
-      // }
-      // const isVideo = data.graphql.shortcode_media.is_video;
-      // const ownerInfo = data.graphql.shortcode_media.owner;
-      // const itemDownload = {
-      //   caption,
-      //   displayUrl,
-      //   isVideo,
-      //   ownerInfo,
-      // };
-      // let edgeSidecarToChildren = [];
-      // if (data.graphql.shortcode_media.edge_sidecar_to_children) {
-      //   edgeSidecarToChildren = data.graphql.shortcode_media.edge_sidecar_to_children.edges;
-      // }
-      // await this.setState({
-      //   imageShowUri: displayUrl,
-      //   imageShowName: shortCode,
-      //   multialImageShowUri: edgeSidecarToChildren,
-      //   downloads: [...downloads, itemDownload],
-      // });
+      homeActionProps.addUrl({ url, data });
     } catch (error) {
       console.log('error handleGetDownloadLink', error);
     }
   }
 
   handlePressDownload = async (data) => {
-    console.log('========================================');
-    console.log('handlePressDownload', data);
-    console.log('========================================');
-    const imageShowUri = data.graphql.shortcode_media.display_url;
-    const imageShowName = data.graphql.shortcode_media.shortcode;
+    PubSub.publish('download', 'isDownloading');
+
+    const _data = data.data;
+    const imageShowUri = _data.graphql.shortcode_media.display_url;
+    const imageShowName = _data.graphql.shortcode_media.shortcode;
     let edgeSidecarToChildren = [];
-    if (data.graphql.shortcode_media.edge_sidecar_to_children) {
-      edgeSidecarToChildren = data.graphql.shortcode_media.edge_sidecar_to_children.edges;
+    if (_data.graphql.shortcode_media.edge_sidecar_to_children) {
+      edgeSidecarToChildren = _data.graphql.shortcode_media.edge_sidecar_to_children.edges;
     }
     const multialImageShowUri = edgeSidecarToChildren;
-    const isVideo = data.graphql.shortcode_media.is_video;
-    const videoUrl = isVideo ? data.graphql.shortcode_media.video_url : null;
+    const isVideo = _data.graphql.shortcode_media.is_video;
+    const videoUrl = isVideo ? _data.graphql.shortcode_media.video_url : null;
 
     try {
-      // this.setState({ isDownloading: true });
       if (multialImageShowUri.length > 0) {
         multialImageShowUri.forEach(async (item) => {
           const name = item.node.shortcode;
@@ -167,7 +133,7 @@ class HomeScreen extends React.PureComponent {
             path: `${RNFetchBlob.fs.dirs.DocumentDir}/${name}.${fileExt}`,
           }).fetch('GET', uri);
 
-          await CameraRoll.saveToCameraRoll(res.data, type);
+          await CameraRoll.saveToCameraRoll(res._data, type);
         });
       } else {
         const fileExt = isVideo ? 'mp4' : 'jpg';
@@ -179,14 +145,10 @@ class HomeScreen extends React.PureComponent {
 
         await CameraRoll.saveToCameraRoll(res.data, type);
       }
-
-      PubSub.publish('download', 'downloaded');
-
-      // setTimeout(() => {
-      //   this.setState({ isDownloading: false });
-      // }, 2000);
+      setTimeout(() => {
+        PubSub.publish('download', { message: 'downloaded', item: data });
+      }, 1000);
     } catch (error) {
-      // this.setState({ isDownloading: false });
       console.log('error handlePressDownload', error);
     }
   }
@@ -213,8 +175,10 @@ class HomeScreen extends React.PureComponent {
     );
   }
 
-
   renderItem=({ item }) => {
+    console.log('========================================');
+    console.log('item', item);
+    console.log('========================================');
     const swipeoutBtnRight = [
       {
         text: 'Delete',
@@ -237,20 +201,28 @@ class HomeScreen extends React.PureComponent {
 
   render() {
     const { downloads } = this.props;
+    const { refreshing } = this.state;
     return (
-      <View style={styles.container}>
-        { downloads ? (
-          <FlatList
-            data={downloads}
-            renderItem={this.renderItem}
-            keyExtractor={(item, index) => `${index}`}
-          />
-        ) : (
-          <Text>Empty </Text>
-        )}
+      <ScrollView refreshControl={(
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={this._onRefresh}
+        />
+      )}
+      >
+        <View style={styles.container}>
+          { downloads ? (
+            <FlatList
+              data={downloads}
+              renderItem={this.renderItem}
+              keyExtractor={(item, index) => `${index}`}
+            />
+          ) : (
+            <Text>Empty </Text>
+          )}
 
 
-        {/* <Image
+          {/* <Image
           style={{ width: 300, height: 300 }}
           source={{ uri: imageShowUri }}
         />
@@ -263,7 +235,8 @@ class HomeScreen extends React.PureComponent {
           <Text style={{ color: '#ffffff', fontSize: 16 }}>Download</Text>
         </TouchableOpacity>
         {isDownloading ? <InstaLoading /> : null} */}
-      </View>
+        </View>
+      </ScrollView>
     );
   }
 }

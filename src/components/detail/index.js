@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, Image,
+  View, StyleSheet, Image,
 } from 'react-native';
 import Video from 'react-native-video';
+import { Navigation } from 'react-native-navigation';
 
 class DetailScreen extends React.PureComponent {
   static options(passProps) {
@@ -19,16 +20,45 @@ class DetailScreen extends React.PureComponent {
           color: '#000',
           fontFamily: 'Helvetica',
         },
+        rightButtons: [{
+          id: 'btnShare',
+          icon: require('../../assets/images/icon_share.png'),
+        },
+        {
+          id: 'btnDelete',
+          icon: require('../../assets/images/icon_waste.png'),
+        },
+        ],
       },
     };
   }
 
+  constructor(props) {
+    super(props);
+    Navigation.events().bindComponent(this); // <== Will be automatically unregistered when unmounted
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    // will be called when "buttonOne" is clicked
+    const { data } = this.props;
+    switch (buttonId) {
+    case 'btnShare':
+      console.log('========================================');
+      console.log('share....');
+      console.log('========================================');
+      break;
+    case 'btnDelete':
+      break;
+    default:
+      break;
+    }
+  }
+
+
   render() {
     const { data } = this.props;
     const isVideo = data.node.type === 'video/mp4';
-    console.log('========================================');
-    console.log('data', data);
-    console.log('========================================');
+
     return (
       <View style={styles.container}>
         {
