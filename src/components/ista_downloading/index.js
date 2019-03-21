@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Image, Text, StyleSheet, TouchableOpacity, Linking,
+  View, Image, Text, StyleSheet, Linking,
 } from 'react-native';
 import Spinner from 'react-native-spinkit';
 
@@ -21,7 +21,11 @@ export default class InstaDownloading extends React.PureComponent {
     PubSub.subscribe('download', this.subscribeDownloading);
   }
 
+
   subscribeDownloading= (msg, data) => {
+    console.log('========================================');
+    console.log('data', data);
+    console.log('========================================');
     const { item } = this.props;
     if (data.message === 'isDownloading' && data.item.data.graphql.shortcode_media.id === item.data.graphql.shortcode_media.id) {
       this.setState({ isDownloading: true });

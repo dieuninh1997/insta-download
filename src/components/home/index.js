@@ -109,7 +109,7 @@ class HomeScreen extends React.PureComponent {
   }
 
   handlePressDownload = async (data) => {
-    PubSub.publish('download', 'isDownloading');
+    PubSub.publish('download', { message: 'isDownloading', item: data });
 
     const _data = data.data;
     const imageShowUri = _data.graphql.shortcode_media.display_url;
@@ -146,7 +146,7 @@ class HomeScreen extends React.PureComponent {
         await CameraRoll.saveToCameraRoll(res.data, type);
       }
       setTimeout(() => {
-        PubSub.publish('download', { message: 'downloaded', item: data });
+        PubSub.publish('download', 'downloaded');
       }, 1000);
     } catch (error) {
       console.log('error handlePressDownload', error);
@@ -154,6 +154,9 @@ class HomeScreen extends React.PureComponent {
   }
 
   handleDelete = (item) => {
+    console.log('========================================');
+    console.log('item', item);
+    console.log('========================================');
     Alert.alert(
       null,
       'Are you sure delete this post?',
@@ -176,9 +179,6 @@ class HomeScreen extends React.PureComponent {
   }
 
   renderItem=({ item }) => {
-    console.log('========================================');
-    console.log('item', item);
-    console.log('========================================');
     const swipeoutBtnRight = [
       {
         text: 'Delete',
