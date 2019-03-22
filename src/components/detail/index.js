@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, StyleSheet, Image,
+  View, StyleSheet, Image, Share,
 } from 'react-native';
 import Video from 'react-native-video';
 import { Navigation } from 'react-native-navigation';
@@ -25,8 +25,8 @@ class DetailScreen extends React.PureComponent {
           icon: require('../../assets/images/icon_share.png'),
         },
         {
-          id: 'btnDelete',
-          icon: require('../../assets/images/icon_waste.png'),
+          id: 'btnInfo',
+          icon: require('../../assets/images/icon_info.png'),
         },
         ],
       },
@@ -38,16 +38,33 @@ class DetailScreen extends React.PureComponent {
     Navigation.events().bindComponent(this); // <== Will be automatically unregistered when unmounted
   }
 
-  navigationButtonPressed({ buttonId }) {
+  // TODO: share
+  async navigationButtonPressed({ buttonId }) {
     // will be called when "buttonOne" is clicked
     const { data } = this.props;
+    console.log('========================================');
+    console.log('data', data);
+    console.log('========================================');
     switch (buttonId) {
     case 'btnShare':
-      console.log('========================================');
-      console.log('share....');
-      console.log('========================================');
+      try {
+        const res = await Share.share({
+          message: 'test',
+          url: data.node.info.path,
+        });
+        switch (res.action) {
+        case Share.sharedAction:
+          break;
+        case Share.dismissedAction:
+          break;
+        default:
+          break;
+        }
+      } catch (error) {
+        console.log('Detail share error', error);
+      }
       break;
-    case 'btnDelete':
+    case 'btnInfo':
       break;
     default:
       break;
