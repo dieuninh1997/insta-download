@@ -41,7 +41,7 @@ class InstaDownloading extends React.PureComponent {
             path: `${RNFetchBlob.fs.dirs.DocumentDir}/${name}.${fileExt}`,
           }).fetch('GET', uri);
 
-          await CameraRoll.saveToCameraRoll(res._data, type);
+          await CameraRoll.saveToCameraRoll(res.data, type);
         });
       } else {
         const fileExt = isVideo ? 'mp4' : 'jpg';
