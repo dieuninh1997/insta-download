@@ -46,6 +46,9 @@ class AlbumScreen extends React.PureComponent {
     this.tryLoadPhotos();
 
     PubSub.subscribe('download', () => {
+      console.log('========================================');
+      console.log('reload ablbum');
+      console.log('========================================');
       this.loadData();
     });
   }
