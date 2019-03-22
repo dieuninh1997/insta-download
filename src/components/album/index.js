@@ -5,6 +5,7 @@ import {
 import { Navigation } from 'react-native-navigation';
 import PhotoGrid from 'react-native-photo-grid';
 import PubSub from 'pubsub-js';
+import RNFetchBlob from 'rn-fetch-blob';
 
 class AlbumScreen extends React.PureComponent {
   static options(passProps) {
@@ -69,32 +70,60 @@ class AlbumScreen extends React.PureComponent {
     }
   }
 
-  async loadData() {
-    const { lastCursor } = this.state;
-    const paramsPhotos = {
-      first: 35,
-      groupTypes: 'All',
-      assetType: 'Photos',
-      groupName: 'DCIM',
-    };
-    const paramsVideos = {
-      first: 35,
-      groupTypes: 'All',
-      assetType: 'Videos',
-      groupName: 'DCIM',
-    };
-    if (Platform.OS === 'android') {
-      delete paramsPhotos.groupTypes;// groupTypes is not supported in android
-      delete paramsVideos.groupTypes;// groupTypes is not supported in android
-    }
-    if (lastCursor) {
-      paramsPhotos.after = lastCursor;
-      paramsVideos.after = lastCursor;
-    }
-    const resPhotos = await CameraRoll.getPhotos(paramsPhotos);
-    const resVideos = await CameraRoll.getPhotos(paramsVideos);
+  getInfoMedia=async (url) => {
+    const info = await RNFetchBlob.fs.stat(url);
+    return info;
+  }
 
-    this.appendAssets({ resPhotos, resVideos });
+  async loadData() {
+    try {
+      const { lastCursor } = this.state;
+      const paramsPhotos = {
+        first: 35,
+        groupTypes: 'All',
+        assetType: 'Photos',
+        groupName: 'DCIM',
+      };
+      const paramsVideos = {
+        first: 35,
+        groupTypes: 'All',
+        assetType: 'Videos',
+        groupName: 'DCIM',
+      };
+      if (Platform.OS === 'android') {
+        delete paramsPhotos.groupTypes;// groupTypes is not supported in android
+        delete paramsVideos.groupTypes;// groupTypes is not supported in android
+      }
+      if (lastCursor) {
+        paramsPhotos.after = lastCursor;
+        paramsVideos.after = lastCursor;
+      }
+      const resPhotos = await CameraRoll.getPhotos(paramsPhotos);
+      const resVideos = await CameraRoll.getPhotos(paramsVideos);
+
+      for (let i = 0; i < resPhotos.edges.length; i++) {
+        const info = await this.getInfoMedia(resPhotos.edges[i].node.image.uri);
+        resPhotos.edges[i].node.info = info;
+      }
+
+      for (let i = 0; i < resVideos.edges.length; i++) {
+        const info = await this.getInfoMedia(resVideos.edges[i].node.image.uri);
+        resVideos.edges[i].node.info = info;
+      }
+      this.appendAssets({ resPhotos, resVideos });
+    } catch (error) {
+      console.log('Album loadData error', error);
+    }
+  }
+
+
+  formatBytes=(a, b) => {
+    if (a === 0) { return '0 Bytes'; }
+    const c = 1024;
+    const d = b || 2;
+    const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const f = Math.floor(Math.log(a) / Math.log(c));
+    return `${parseFloat((a / Math.pow(c, f)).toFixed(d))} ${e[f]}`;
   }
 
   appendAssets(data) {

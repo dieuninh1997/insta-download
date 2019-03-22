@@ -17,7 +17,7 @@ Navigation.events().registerAppLaunchedListener(() => {
       bottomTabs: {
         options: {
           bottomTabs: {
-            currentTabIndex: 0,
+            currentTabIndex: 1,
           },
         },
         children: [

@@ -20,8 +20,12 @@ class InstaDownloading extends React.PureComponent {
 
   onDownloadPressed=async (data) => {
     const _data = data.data;
+    console.log('========================================');
+    console.log('_data', _data);
+    console.log('========================================');
     const imageShowUri = _data.graphql.shortcode_media.display_url;
     const imageShowName = _data.graphql.shortcode_media.shortcode;
+    const userName = _data.graphql.shortcode_media.owner.username;
     let edgeSidecarToChildren = [];
     if (_data.graphql.shortcode_media.edge_sidecar_to_children) {
       edgeSidecarToChildren = _data.graphql.shortcode_media.edge_sidecar_to_children.edges;
@@ -38,9 +42,11 @@ class InstaDownloading extends React.PureComponent {
           const fileExt = item.node.is_video ? 'mp4' : 'jpg';
           const type = item.node.is_video ? 'video' : 'photo';
           const res = await RNFetchBlob.config({
-            path: `${RNFetchBlob.fs.dirs.DocumentDir}/${name}.${fileExt}`,
+            path: `${RNFetchBlob.fs.dirs.DocumentDir}/InstaDownload_${userName}_${name}.${fileExt}`,
           }).fetch('GET', uri);
-
+          console.log('========================================');
+          console.log('res DL mul', res);
+          console.log('========================================');
           await CameraRoll.saveToCameraRoll(res.data, type);
         });
       } else {
@@ -48,9 +54,11 @@ class InstaDownloading extends React.PureComponent {
         const type = isVideo ? 'video' : 'photo';
         const urlDownload = isVideo ? videoUrl : imageShowUri;
         const res = await RNFetchBlob.config({
-          path: `${RNFetchBlob.fs.dirs.DocumentDir}/${imageShowName}.${fileExt}`,
+          path: `${RNFetchBlob.fs.dirs.DocumentDir}/InstaDownload_${userName}_${imageShowName}.${fileExt}`,
         }).fetch('GET', urlDownload);
-
+        console.log('========================================');
+        console.log('res DL', res);
+        console.log('========================================');
         await CameraRoll.saveToCameraRoll(res.data, type);
       }
       setTimeout(() => {
@@ -140,9 +148,6 @@ class InstaDownloading extends React.PureComponent {
        matches.push(a[0]);
      }
      const res = matches.toString().replace(/,/gi, ' ');
-     console.log('========================================');
-     console.log('res', res);
-     console.log('========================================');
      return res;
    }
 
