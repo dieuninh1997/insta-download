@@ -54,8 +54,7 @@ class SettingsScreen extends React.PureComponent {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.header}>Theme</Text>
-        {/* theme mode */}
+        {/* <Text style={styles.header}>Theme</Text>
         <View style={styles.themeContainer}>
           <Text style={styles.title}>Night mode</Text>
           <RadioGroup
@@ -75,7 +74,7 @@ class SettingsScreen extends React.PureComponent {
               <Text>On</Text>
             </RadioButton>
           </RadioGroup>
-        </View>
+        </View> */}
         {/* about */}
         <Text style={styles.header}>About</Text>
         {/* version */}

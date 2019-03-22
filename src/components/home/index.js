@@ -179,25 +179,24 @@ class HomeScreen extends React.PureComponent {
     );
   }
 
-  renderItem=({ item }) => {
-    const swipeoutBtnRight = [
-      {
-        text: 'Delete',
-        component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_trash.png')} style={styles.iconDelete} /></View>,
-        onPress: () => this.handleDelete(item),
-      },
-      {
-        text: 'Download',
-        component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_downloading.png')} style={styles.iconDownload} /></View>,
-        onPress: () => this.handlePressDownload(item),
-      },
-    ];
-    return (
-      <Swipeout right={swipeoutBtnRight} backgroundColor="#ffffff" buttonWidth={40}>
-        <InstaDownloading item={item} />
-      </Swipeout>
-    );
-  }
+  renderItem=({ item }) => (<InstaDownloading item={item} />)
+  // const swipeoutBtnRight = [
+  //   {
+  //     text: 'Delete',
+  //     component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_trash.png')} style={styles.iconDelete} /></View>,
+  //     onPress: () => this.handleDelete(item),
+  //   },
+  //   {
+  //     text: 'Download',
+  //     component: <View style={styles.iconContainer}><Image source={require('../../assets/images/icon_downloading.png')} style={styles.iconDownload} /></View>,
+  //     onPress: () => this.handlePressDownload(item),
+  //   },
+  // ];
+  // return (
+  //   <Swipeout right={swipeoutBtnRight} backgroundColor="#ffffff" buttonWidth={40}>
+  //     <InstaDownloading item={item} />
+  //   </Swipeout>
+  // );
 
 
   openVideoGuide = () => {
@@ -281,8 +280,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   cardContainer: {
     flex: 1,

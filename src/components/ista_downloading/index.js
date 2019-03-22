@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-  View, Image, Text, StyleSheet, Linking,
+  View, Image, Text, StyleSheet, Linking, TouchableOpacity,
 } from 'react-native';
 import Spinner from 'react-native-spinkit';
+import Feather from 'react-native-vector-icons/Feather';
 
 export default class InstaDownloading extends React.PureComponent {
   openUrlByInstaApp = (url) => {
@@ -15,6 +16,7 @@ export default class InstaDownloading extends React.PureComponent {
 
   state ={
     isDownloading: false,
+    isShowControl: false,
   }
 
   componentDidMount() {
@@ -34,37 +36,101 @@ export default class InstaDownloading extends React.PureComponent {
     }
   };
 
+  onDownloadPressed=() => {
+
+  }
+
+  onDeletePressed=() => {}
+
+  onSharePressed=() => {}
+
+  onExternalPressed=() => {}
+
+  onCopyHashPressed=() => {}
+
+  onCopyAllCaptionPressed=() => {}
+
+  onShowControlPressed=() => {
+    const { isShowControl } = this.state;
+    this.setState({ isShowControl: !isShowControl });
+  }
+
   render() {
     const { item } = this.props;
-    const { isDownloading } = this.state;
+    const { isDownloading, isShowControl } = this.state;
     const caption = item.data.graphql.shortcode_media.edge_media_to_caption && item.data.graphql.shortcode_media.edge_media_to_caption.edges.length ? item.data.graphql.shortcode_media.edge_media_to_caption.edges[0].node.text : '';
     const isVideo = item.data.graphql.shortcode_media.is_video;
     return (
       <View style={styles.container}>
-        <View style={styles.thumbnaiContainer}>
-          <Image source={{ uri: item.data.graphql.shortcode_media.display_url }} style={styles.imageThumbnai} />
-          {isVideo ? (
-            <Image style={styles.playIcon} resizeMode="cover" source={require('../../assets/images/icon_play_circled.png')} />
-          ) : null}
-        </View>
-        <View style={styles.content}>
-          <View style={styles.ownerInfoContainer}>
-            <Image source={{ uri: item.data.graphql.shortcode_media.owner.profile_pic_url }} style={styles.avatar} />
-            <Text style={styles.username}>{item.data.graphql.shortcode_media.owner.username}</Text>
+        <View style={styles.infoContainer}>
+          <View style={styles.thumbnaiContainer}>
+            <Image source={{ uri: item.data.graphql.shortcode_media.display_url }} style={styles.imageThumbnai} />
+            {isVideo ? (
+              <Image style={styles.playIcon} resizeMode="cover" source={require('../../assets/images/icon_play_circled.png')} />
+            ) : null}
           </View>
-          <View style={styles.captionContainer}>
-            <Text style={styles.caption} numberOfLines={2}>{caption}</Text>
-          </View>
-
-          {isDownloading ? (
-            <View style={styles.controlView}>
-              <Spinner style={{ marginTop: 20 }} isVisible size={10} type="9CubeGrid" color="#37b0f2" />
-              <Spinner style={{ marginTop: 20 }} isVisible size={10} type="9CubeGrid" color="#37b0f2" />
-              <Spinner style={{ marginTop: 20 }} isVisible size={10} type="9CubeGrid" color="#37b0f2" />
+          <View style={styles.content}>
+            <View style={styles.ownerInfoContainer}>
+              <Image source={{ uri: item.data.graphql.shortcode_media.owner.profile_pic_url }} style={styles.avatar} />
+              <Text style={styles.username}>{item.data.graphql.shortcode_media.owner.username}</Text>
             </View>
-          ) : (null)}
+            <View style={styles.captionContainer}>
+              <Text style={styles.caption} numberOfLines={2}>{caption}</Text>
+            </View>
 
+
+            <View style={styles.controlView}>
+              {isDownloading ? (
+                <View style={style.downloadingContainer}>
+                  <Spinner style={{ marginTop: 20 }} isVisible size={10} type="9CubeGrid" color="#37b0f2" />
+                  <Spinner style={{ marginTop: 20 }} isVisible size={10} type="9CubeGrid" color="#37b0f2" />
+                  <Spinner style={{ marginTop: 20 }} isVisible size={10} type="9CubeGrid" color="#37b0f2" />
+                </View>
+              ) : (null)}
+              <TouchableOpacity style={styles.threedots} onPress={this.onShowControlPressed}>
+                <Feather name="more-vertical" style={styles.iconThreeDots} />
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
+
+        {isShowControl ? (
+          <View style={styles.controlContainer}>
+            {/* btn download */}
+            <TouchableOpacity style={styles.btnControl} onPress={this.onDownloadPressed}>
+              <Feather name="download" style={styles.icon} />
+            </TouchableOpacity>
+            {/* btn delete */}
+            <TouchableOpacity style={styles.btnControl} onPress={this.onDeletePressed}>
+              <Feather name="trash-2" style={styles.icon} />
+            </TouchableOpacity>
+
+            {/* btn share */}
+            <TouchableOpacity style={styles.btnControl} onPress={this.onSharePressed}>
+              <Feather name="share-2" style={styles.icon} />
+            </TouchableOpacity>
+
+            {/* btn view on insta */}
+            <TouchableOpacity style={styles.btnControl} onPress={this.onExternalPressed}>
+              <Feather name="external-link" style={styles.icon} />
+            </TouchableOpacity>
+
+            {/* copy hashtag */}
+            {caption ? (
+              <TouchableOpacity style={styles.btnControl} onPress={this.onCopyHashPressed}>
+                <Feather name="hash" style={styles.icon} />
+              </TouchableOpacity>
+            ) : null}
+
+            {/* copy all caption */}
+            {caption ? (
+              <TouchableOpacity style={styles.btnControl} onPress={this.onCopyAllCaptionPressed}>
+                <Feather name="copy" style={styles.icon} />
+              </TouchableOpacity>
+            ) : null}
+
+          </View>
+        ) : (null)}
       </View>
     );
   }
@@ -73,10 +139,13 @@ export default class InstaDownloading extends React.PureComponent {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
+
     marginVertical: 4,
     borderRadius: 2,
     elevation: 4,
+  },
+  infoContainer: {
+    flexDirection: 'row',
   },
   thumbnaiContainer: {
     width: 120,
@@ -126,6 +195,38 @@ const styles = StyleSheet.create({
   controlView: {
     flexDirection: 'row',
     height: 30,
+    marginTop: 10,
     alignItems: 'center',
+  },
+  controlContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnControl: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 25,
+    height: 25,
+    borderRadius: 15,
+    backgroundColor: '#37b0f2',
+    marginLeft: 20,
+  },
+  icon: {
+    fontSize: 16,
+    color: '#ffffff',
+  },
+  iconThreeDots: {
+    fontSize: 16,
+    color: '#000000',
+  },
+  threedots: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  downloadingContainer: {
+    flexDirection: 'row',
+    flex: 1,
   },
 });
