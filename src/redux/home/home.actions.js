@@ -4,6 +4,11 @@ export const addUrl = (data, callback) => ({
   type: types.ADD_URL,
   payload: { data, callback },
 });
+export const checkExist = (data, callback) => ({
+  type: types.CHECK_EXIST,
+  payload: { data, callback },
+});
+
 export const removeUrl = (data, callback) => ({
   type: types.REMOVE_URL,
   payload: { data, callback },

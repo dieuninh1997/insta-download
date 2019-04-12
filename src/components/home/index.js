@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Navigation } from 'react-native-navigation';
 import { Card, Button, Icon } from 'react-native-elements';
+import _ from 'lodash';
 import InstaDownloading from '../ista_downloading';
 import { isValidateUrl } from '../../utils/validate';
 import * as homeAction from '../../redux/home/home.actions';
@@ -84,11 +85,16 @@ class HomeScreen extends React.PureComponent {
 
 
   getNewUrlFromClipboard = async () => {
+    const { downloads } = this.props;
     const urlClipboard = await Clipboard.getString();
     if (isValidateUrl(urlClipboard)) {
       const url = urlClipboard.split('?utm_source=')[0];
       const newUrl = `${url}?__a=1`;
-      this.handleGetDownloadLink(newUrl, urlClipboard);
+      // check if url is exist
+      console.log(`exist = ${_.filter(downloads, item => item.url === newUrl).length}`);
+      if (_.filter(downloads, item => item.url === newUrl).length === 0) {
+        this.handleGetDownloadLink(newUrl, urlClipboard);
+      }
       return true;
     }
     // TODO: show toast error
@@ -131,7 +137,7 @@ class HomeScreen extends React.PureComponent {
       )}
       >
         <View style={styles.container}>
-          { downloads.length > 0 ? (
+          { downloads ? (
             <FlatList
               data={downloads}
               renderItem={this.renderItem}

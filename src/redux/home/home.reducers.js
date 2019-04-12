@@ -9,10 +9,6 @@ export default function init(state = initialState, action) {
   case types.ADD_URL:
     return { ...state, downloads: [...state.downloads, action.payload.data] };
   case types.REMOVE_URL:
-    console.log('========================================');
-    console.log('action.payload', action.payload);
-    console.log('state.downloads', state.downloads);
-    console.log('========================================');
     return { ...state, downloads: _.filter(state.downloads, item => item.data.graphql.shortcode_media.id !== action.payload.data.data.graphql.shortcode_media.id) };
   default:
     return state;
